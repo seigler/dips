@@ -15,6 +15,12 @@
 1.  [Motivation](#motivation)
 1.  [Prior Work](#prior-work)
 1.  [Specification](#specification)
+  1. [General rules for handling (important!)](#general-rules-for-handling-important)
+  1. [Operating system integration](#operating-system-integration)
+  1. [General format](#general-format)
+  1. [ABNF grammar](#abnf-grammar)
+  1. [Query keys](#query-keys)
+  1. [Transfer Amount](#transfer-amount)
 1.  [Copyright](#copyright)
 
 ## Abstract
@@ -47,7 +53,7 @@ Graphical Dash clients SHOULD register themselves as the handler for the
 there is already a registered handler, they MAY prompt the user to change it
 once when they first run the client.
 
-### General Format
+### General format
 
 Dash URIs follow the general format for URIs as set forth in RFC 3986. The path
 component consists of a dash address, and the query component provides
@@ -81,7 +87,7 @@ The scheme component ("dash:") is case-insensitive, and implementations must
 accept any combination of uppercase and lowercase letters. The rest of the URI
 is case-sensitive, including the query parameter keys.
 
-Query Keys
+### Query keys
 
     label: Label for that address or DPNS name for user
     address: dash address
@@ -91,7 +97,7 @@ Query Keys
     proof: value of [address] field, signed by the private key of [id]
     (others): optional, for future extensions
 
-Transfer amount/size
+### Transfer amount
 
 If an amount is provided, it MUST be specified in decimal Dash. All amounts MUST
 contain no commas and use a period (.) as the separating character to separate
