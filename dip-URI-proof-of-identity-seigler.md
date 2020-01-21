@@ -64,10 +64,12 @@ corresponding UTF-8 sequence must be percent-encoded as described in RFC 3986.
     dashurn     = "dash:" dashaddress [ "?" dashparams ]
     dashaddress = *base58
     dashparams  = dashparam [ "&" dashparams ]
-    dashparam   = [ amountparam / labelparam / messageparam / otherparam / reqparam ]
+    dashparam   = [ amountparam / labelparam / messageparam / idparam / proofparam / otherparam / reqparam ]
     amountparam    = "amount=" *digit [ "." *digit ]
     labelparam     = "label=" *qchar
     messageparam   = "message=" *qchar
+    idparam        = "id=" *base58
+    proofparam     = "proof=" *base58
     otherparam     = qchar *qchar [ "=" *qchar ]
     reqparam       = "req-" qchar *qchar [ "=" *qchar ]
 
@@ -81,10 +83,12 @@ is case-sensitive, including the query parameter keys.
 
 Query Keys
 
-    label: Label for that address (e.g. name of receiver)
+    label: Label for that address or DPNS name for user
     address: dash address
     message: message that describes the transaction to the user (see examples below)
-    size: amount of base dash units (see below)
+    amount: amount of base dash units (see below)
+    id: platform ID used for proof
+    proof: value of [address] field, signed by the private key of [id]
     (others): optional, for future extensions
 
 Transfer amount/size
@@ -99,7 +103,11 @@ deceive the user. They SHOULD choose a format that is foremost least confusing,
 and only after that most reasonable given the amount requested. For example, so
 long as the majority of users work in Dash units, values should always be
 displayed in Dash by default, even if mDash or something else would be a more
-logical interpretation of the amount. 
+logical interpretation of the amount.
+
+Dash clients MAY display the profile of a user indicated by the label field, if
+the ID and proof are validated by DAPI. If the ID and proof do not match the
+label, clients SHOULD indicate the mismatch in some way, e.g. with a warning.
 
 ## Appendix
 ### Simpler syntax
@@ -109,35 +117,35 @@ the BNF grammar above for the normative syntax.
 
 [foo] means optional, <bar> are placeholders
 
- dash:<address>[?amount=<amount>][?label=<label>][?message=<message>]
+    dash:<address>[?amount=<amount>][?label=<label>][?message=<message>]
 
 ### Examples
 
 Just the address:
 
- dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W
+    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W
 
 Address with name:
 
- dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Evan
+    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Evan
 
 Request 20.30 Dash to "Evan":
 
- dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Evan
+    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Evan
 
 Request 50 Dash with message:
 
- dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Evan&message=Donation%20for%20project%20xyz
+    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Evan&message=Donation%20for%20project%20xyz
 
 Some future version that has variables which are (currently) not understood and
 required and thus invalid:
 
- dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999
+    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999
 
 Some future version that has variables which are (currently) not understood but
 not required and thus valid:
 
- dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999
+    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999
 
 Characters must be URI encoded properly. 
 
