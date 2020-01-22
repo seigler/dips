@@ -15,12 +15,12 @@
 1.  [Motivation](#motivation)
 1.  [Prior Work](#prior-work)
 1.  [Specification](#specification)
-  1. [General rules for handling (important!)](#general-rules-for-handling-important)
-  1. [Operating system integration](#operating-system-integration)
-  1. [General format](#general-format)
-  1. [ABNF grammar](#abnf-grammar)
-  1. [Query keys](#query-keys)
-  1. [Transfer Amount](#transfer-amount)
+    1. [General rules for handling (important!)](#general-rules-for-handling-important)
+    1. [Operating system integration](#operating-system-integration)
+    1. [General format](#general-format)
+    1. [ABNF grammar](#abnf-grammar)
+    1. [Query keys](#query-keys)
+    1. [Transfer Amount](#transfer-amount)
 1.  [Copyright](#copyright)
 
 ## Abstract
