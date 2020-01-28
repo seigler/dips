@@ -21,6 +21,7 @@
     1. [ABNF grammar](#abnf-grammar)
     1. [Query keys](#query-keys)
     1. [Transfer Amount](#transfer-amount)
+    1. [Dash Platform Name](#dash-platform-name)
 1.  [Copyright](#copyright)
 
 ## Abstract
@@ -70,12 +71,11 @@ corresponding UTF-8 sequence must be percent-encoded as described in RFC 3986.
     dashurn     = "dash:" dashaddress [ "?" dashparams ]
     dashaddress = *base58
     dashparams  = dashparam [ "&" dashparams ]
-    dashparam   = [ amountparam / labelparam / messageparam / idparam / proofparam / otherparam / reqparam ]
+    dashparam   = [ amountparam / labelparam / messageparam / dpnparam / otherparam / reqparam ]
     amountparam    = "amount=" *digit [ "." *digit ]
     labelparam     = "label=" *qchar
     messageparam   = "message=" *qchar
-    idparam        = "id=" *base58
-    proofparam     = "proof=" *base58
+    dpnparam       = "dpn=" *qchar "," *base58
     otherparam     = qchar *qchar [ "=" *qchar ]
     reqparam       = "req-" qchar *qchar [ "=" *qchar ]
 
@@ -89,17 +89,16 @@ is case-sensitive, including the query parameter keys.
 
 ### Query keys
 
-    label: Label for that address or DPNS name for user
-    address: dash address
-    message: message that describes the transaction to the user (see examples below)
-    amount: amount of base dash units (see below)
-    id: platform ID used for proof
-    proof: value of [address] field, signed by the private key of [id]
-    (others): optional, for future extensions
+- **label**: Label for that address
+- **address**: dash address
+- **message**: message that describes the transaction to the user (see examples below)
+- **amount**: amount of base dash units (see below)
+- **dpn**: A Dash Platform name and a signature approving this dash address ([see below](#dash-platform-name))
+- **(others)**: optional, for future extensions
 
 ### Transfer amount
 
-If an amount is provided, it MUST be specified in decimal Dash. All amounts MUST
+If an amount is provided, it MUST be specified in decimal dash. All amounts MUST
 contain no commas and use a period (.) as the separating character to separate
 whole numbers and decimal fractions. I.e. amount=50.00 or amount=50 is treated
 as 50 Dash, and amount=50,000.00 is invalid.
@@ -107,13 +106,16 @@ as 50 Dash, and amount=50,000.00 is invalid.
 Dash clients MAY display the amount in any format that is not intended to
 deceive the user. They SHOULD choose a format that is foremost least confusing,
 and only after that most reasonable given the amount requested. For example, so
-long as the majority of users work in Dash units, values should always be
-displayed in Dash by default, even if mDash or something else would be a more
+long as the majority of users work in dash units, values should always be
+displayed in dash by default, even if mDash or something else would be a more
 logical interpretation of the amount.
 
-Dash clients MAY display the profile of a user indicated by the label field, if
-the ID and proof are validated by DAPI. If the ID and proof do not match the
-label, clients SHOULD indicate the mismatch in some way, e.g. with a warning.
+### Dash Platform Name
+
+Dash clients MAY display the profile of a user indicated by the `dpn` field, if
+the ID and signature are validated by DAPI. If the ID and proof do not match the
+Dash Platform name, clients SHOULD indicate the mismatch in some way, e.g. with
+a warning.
 
 ## Appendix
 ### Simpler syntax
@@ -123,35 +125,39 @@ the BNF grammar above for the normative syntax.
 
 [foo] means optional, <bar> are placeholders
 
-    dash:<address>[?amount=<amount>][?label=<label>][?message=<message>]
+    dash:<address>[?amount=<amount>][?label=<label>][?message=<message>][?dpn=<dash platform name>,<signature>]
 
-### Examples
+### Examples (using evonet addresses)
 
 Just the address:
 
-    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D
 
 Address with name:
 
-    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Evan
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D?label=Evan
+
+Address with Dash Platform name:
+
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D?dpn=evan.dash,IGf+WGXqKcdugL/PdR8Ze3BuiKf8UHhJVhRengdPTFKxORVx9jzP1a7UrDvXb7pV48FvspdhJ5T91T34v0uHUDs=
 
 Request 20.30 Dash to "Evan":
 
-    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=20.3&label=Evan
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D?amount=20.3&label=Evan
 
 Request 50 Dash with message:
 
-    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=50&label=Evan&message=Donation%20for%20project%20xyz
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D?amount=50&label=Evan&message=Donation%20for%20project%20xyz
 
 Some future version that has variables which are (currently) not understood and
 required and thus invalid:
 
-    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D?req-somethingyoudontunderstand=50&req-somethingelseyoudontget=999
 
 Some future version that has variables which are (currently) not understood but
 not required and thus valid:
 
-    dash:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?somethingyoudontunderstand=50&somethingelseyoudontget=999
+    dash:yRQYEYPinHLzzRoXzbjt8ZKrZrUgs2MZ4D?somethingyoudontunderstand=50&somethingelseyoudontget=999
 
 Characters must be URI encoded properly. 
 
